@@ -3,7 +3,7 @@ Installing Oracle 10g R2 on Debian 7.
 Dont run the create database step with dbca. We create database manually and run th dbms script. 
 using 10201_database_linux_x86_64.cpio.gz archive
 
-In this installation, my envionment is:
+In this installation, my environment is:
 
 /app/oracle/product10 for oracle engine (ORACLE_HOME)
 /app/oracle/oraInvetory 
