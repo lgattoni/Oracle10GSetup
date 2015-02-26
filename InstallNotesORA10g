@@ -98,24 +98,50 @@ cd /app/oracle/install/database/
 ./runInstaller 
 
 
+Graphiques step:
+
+1:
+Oracle Home Location: /app/oracle/product10 (where you want to install engine)
+Don't check box who "Create starter database (additional 720MB)"
+and clic on "next"
+
+2: Specify Inventory directory and credentials
+/app/oracle/oraInventory (where you want Inventory)
+
+"specify operating System group name" 
+choose "dba"
+and clic on "next"
+
+3:
+Summary
+and clic on "install"
+
+4:
+Installation is running...
+
+5:
+clic continue on error with makefile ins_rdbms.mk
+
+6:
+run script in popup as root in another term.
+/app/oracle/oraInventory/orainstRoot.sh (if directory premissions ok, there is no this script)
+/app/oracle/oraInventory/Root.sh
+
+7:
+End of installation, exit and yes.
 
 
+Start listener:
 
-
-
-
-démarrage listener:
-
-
-en user oracle/unix
+with user oracle/unix
 
 export ORACLE_HOME=/app/oracle/product10
 export PATH=/app/oracle/product10/bin:$PATH
 export ORACLE_SID=DBORA
-export DISABLE_HUGETLBFS=1    (on désactive les hugepages sinon pas de démarrage de l'instance oracle: à Activer si les hugepages sont utilisés)
-PS1="\\[\\033[0;31m\\][\ENV]\\[\\033[00m\\]\${debian_chroot:+(\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\][${ORACLE_SID} Instance]\\$ " (le petit plus)
+export DISABLE_HUGETLBFS=1    (deactivate hugepages: activate if use. In this example, startup faile if no deactivate)
+PS1="\\[\\033[0;31m\\][\ENV]\\[\\033[00m\\]\${debian_chroot:+(\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\][${ORACLE_SID} Instance]\\$ " (for fun)
 
-==> entrer ces parametres dans le .bash_profile de l'utilisateur oracle
+==> input this lines in .bash_profile for oracle user
 
 
 /app/oracle/product10/bin/lsnrctl start LISTENER
@@ -128,7 +154,7 @@ Starting /app/oracle/product10/bin/tnslsnr: please wait...
 
 TNSLSNR for Linux: Version 10.2.0.1.0 - Production
 Log messages written to /app/oracle/product10/network/log/listener.log
-Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=monhost.mondomaine.com)(PORT=1521)))
+Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=myhost.mydomain.com)(PORT=1521)))
 
 Connecting to (ADDRESS=(PROTOCOL=tcp)(HOST=)(PORT=1521))
 STATUS of the LISTENER
@@ -147,29 +173,29 @@ The listener supports no services
 The command completed successfully
 ====================================================================================
 
-Création passwordfile (évite les erreurs quand on atribu un rôle sys à un utilisateur oracle):
+Create password file:
 cd /app/oracle/product10/dbs
 
 orapwd file=orapwDBORA password=password entries=10
 
-création init(SID).ora
+Create init(SID).ora
 cd /app/oracle/product10/dbs
 cp init.ora initDBORA.ora
 
 
-paramètres: 
-DB_CREATE_FILE_DEST = /data/oracle/oradata     (ajouté)
-shared_pool_size = 268435456                      (modifié)
-UNDO_MANAGEMENT = AUTO                            (ajouté)
-streams_pool_size = 41943040  (40M ajouté)
+Parameters in file: 
+DB_CREATE_FILE_DEST = /data/oracle/oradata     (add)
+shared_pool_size = 268435456                      (modify)
+UNDO_MANAGEMENT = AUTO                            (add)
+streams_pool_size = 41943040                  (40M add)
 
 
 
+mkdir -p  /data/oracle/oradata/DBORA
 
-Répertoire d'accueil de la base: mkdir -p  /data/oracle/oradata/DBORA : évite une erreur type    error in adding log file '/data/oracle/oradata/DBORA/redo01.log'
-
-Ouvrir un sqlplus:
-lrwrap sqlplus / as sysdba ==> (on lance avec lrwrap pour historique et rappel de commandes)
+Create spfile:
+Run sqlplus with rlwrap:
+rlwrap sqlplus / as sysdba ==> (rlwrap for history and recall commands)
 
 SQL> CREATE SPFILE='/app/oracle/product10/dbs/spfileDBORA.ora' FROM PFILE='/app/oracle/product10/dbs/initDBORA.ora';
 
@@ -182,11 +208,11 @@ Variable Size             335547104 bytes
 Database Buffers            4194304 bytes
 Redo Buffers                2170880 bytes
 
-==> Création de la Base de donnée:
-créer un createDBORA.sql par exemple avec les informations suivantes, à adapter en fonction de l'architecture voulue:
+==> database creation:
+build file createDBORA.sql with this informations, or other you want:
 
 
-=================================== création de la bae DBORA
+=================================== DBORA
 
 CREATE DATABASE DBORA
    USER SYS IDENTIFIED BY password
@@ -216,50 +242,48 @@ CREATE DATABASE DBORA
 
 ====================================
 
-Lancer la création:
+Launch sql file:
 SQL> @createDBORA.sql;
 
 Database created.
 
 
 
-
-Installation des paquets DBMS  car on a bypassé l'installation de la base avec DBCA.
-#### la methode install software only nous oblige à installer les paquets dbms à la main. 
-####Installation paquet DBMS :
+####Install DBMS packages :
 lrwrap sqlplus / as sysdba ==>
 
-# Les trois scripts principaux sont:    les lancer sucessivement.
+# Running this scripts:
 SQL> @$ORACLE_HOME/rdbms/admin/catalog.sql;
 SQL> @$ORACLE_HOME/rdbms/admin/catproc.sql;
 SQL> @$ORACLE_HOME/rdbms/admin/utlrp.sql;
 
 
-==== Utilisation de dbshut et dbstart
+==== Use  dbshut and dbstart
 
 configuration ORATAB : 
+
 echo "DBORA:/app/oracle/product10:Y" >> /etc/oratab 
 
-modification d'un chemin dans $ORACLE_HOME/bin/dbstart
+modify path in $ORACLE_HOME/bin/dbstart
 
 
-mettre le bon path sur ORACLE_HOME_LISTNER 
+good path on ORACLE_HOME_LISTNER 
 ORACLE_HOME_LISTNER=$ORACLE_HOME
 
-pour stopper en oracle:
+Stop oracle
 dbshut &&  /app/oracle/product10/bin/lsnrctl stop LISTENER
-pour démarrer:
+start Oacle:
 dbstart
 
-ou en sqlplus:
+Stop/start on sqlplus:
 SQL>shutdown
 SQL>startup
 
 
-Pour faire propre avec un script init :
+Init script for stop/start by root and after reboot:
 
-sous /etc/init.d
-dbora comme suit:
+Under /etc/init.d
+create dbora file with this shell :
 =====================================================================
 #!/bin/sh
 ### BEGIN INIT INFO
@@ -299,9 +323,9 @@ case "$1" in
 esac
 ========================================================
 chmod +x /etc/init.d/dbora
-pour le démarrage automatique: update-rc dbora defaults
+Automation stop/start:  update-rc dbora defaults
 
-faire un test:
+Make a test with root user:
 /etc/init.d/dbora [stop,start]
 
 ps -ef |grep ora
@@ -318,3 +342,4 @@ oracle    9783     1  1 11:48 ?        00:00:00 ora_mmon_DBORA
 oracle    9785     1  0 11:48 ?        00:00:00 ora_mmnl_DBORA
 oracle    9789     1  0 11:48 ?        00:00:00 ora_qmnc_DBORA
 
+Great, you have a Oracle 10g R2 installed on your debian 7 :-)  
