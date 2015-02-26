@@ -56,47 +56,49 @@ chown -R oracle.dba /data/oracle/oradata (répertoire des données)
 chown -R oracle. /app/oracle
 
 
-10201_database_linux_x86_64.cpio sous    /app/oracle/install/
-cd   /app/oracle/install
 
-cpio -idmv < 10201_database_linux_x86_64.cpio
 
-on se fait passer pour redhat:
-
+I'm redhat:
+create file redhat-release
 vi /etc/redhat-release
 Red Hat Enterprise Linux Server release 4  (Nahant)
 
 
-Activer l'installation des paquet i386 en ajoutant l'architecture 32bits: pour ia32-libs notamment  
+Enable i386 packages installation with add 32bits architecture: for ia32-libs :
+
 dpkg --add-architecture i386
 apt-get update
 
-Installation des paquets supplémenaires:
-Lancer la boucle d'istallation en faisant attention qu'il n'ai pas de paquet sensibles en "remove": C'est interactif donc pas d'inquiétude.
+
+Packages installation:
+Run this for apt-get install.  don't worry, it's interactive step.
+See if there are remove packages.
 
 for i in autoconf automake binutils bzip2 doxygen gcc less libc6-dev make perl-doc unzip zlibc gcc make binutils gawk x11-utils autotools-dev libltdl-dev libaio1 lesstif2 libmotif4 libaio-dev ksh libpthread-stubs0 libpthread-stubs0-dev libpth-dev libc6-i386  libc6-dev-i386 g++-multilib gcc-multilib xscreensaver ia32-libs ; do apt-get install $i; done
 
 apt-get install gcc make binutils gawk x11-utils rpm alien
 apt-get install libstdc++5
-apt-get install rlwrap (Utilitaire pour l'historisation des commandes  et le rappel: indispensables!!)
+apt-get install rlwrap (for history and recall sql commands: great tool!)
 
-Liens symboliques:
+Symbolic link:
 cd /bin
 
 ln -s /usr/bin/rpm
 ln -s /usr/bin/awk
 ln -s /usr/bin/basename
 
-Pou l'installeur graphique, autoriser le X11 forwarding et démarrer un serveur X sur votre poste.
-Connectez-vous en ssh directement en user oracle
+copy 10201_database_linux_x86_64.cpio.gz under /app/oracle/install/ and gunzip
+cd /app/oracle/install/
+cpio -idmv < 10201_database_linux_x86_64.cpio
 
-Lancement installer sous /app/oracle/install/database/:
+for graphical install, authorize X11 forwarding and start X server on machine. 
+ssh connect with oracle user and launch under /app/oracle/install/database/:
+
 cd /app/oracle/install/database/
+./runInstaller 
 
-./runInstaller avec un export display
 
 
-Voir snapshot:
 
 
 
