@@ -1,0 +1,309 @@
+
+Installing Oracle 10g R2 on Debian 7.
+Dont run the create database step with dbca. We create database manually and run th dbms script. 
+using 10201_database_linux_x86_64.cpio.gz archive
+
+Tuning Kernel:
+Example with 4GB of RAM. Take half of physical memory for shmmax.
+
+kernel.shmall = 524288  
+# shmmax/PAGE_SIZE
+kernel.shmmax = 2147483648 (2GO ici)
+# half of machine memory
+kernel.shmmni = 4096
+kernel.sem = 250 32000 100 128
+fs.file-max = 65536
+net.ipv4.ip_local_port_range = 1024 65000
+net.core.rmem_default = 262144
+net.core.rmem_max = 262144
+
+tuning shell:
+/etc/security/limits.conf
+#Oracle 10G
+oracle soft nproc 2047
+oracle hard nproc 16384
+oracle soft nofile 1024
+oracle hard nofile 65536
+
+
+Group and users:
+
+Ajout group:
+groupadd oinstall
+groupadd dba
+addgroup nobody
+
+Oracle user:
+
+adduser --ingroup oinstall --home /home/oracle --shell /bin/bash --uid 1020 oracle
+usermod -a -G dba oracle
+usermod -g nobody nobody
+chown -R oracle:oinstall /home/oracle
+
+mkdir -p /app/oracle/oraInventory
+mkdir -p /app/oracle/install
+mkdir -p /data/oracle/oradata
+chown -R oracle.dba /data/oracle/oradata (répertoire des données)
+chown -R oracle. /app/oracle
+
+
+copier    10201_database_linux_x86_64.cpio sous    /app/oracle/install/
+cd   /app/oracle/install
+
+cpio -idmv < 10201_database_linux_x86_64.cpio
+
+on se fait passer pour redhat:
+
+vi /etc/redhat-release
+Red Hat Enterprise Linux Server release 4  (Nahant)
+
+
+Activer l'installation des paquet i386 en ajoutant l'architecture 32bits: pour ia32-libs notamment  
+dpkg --add-architecture i386
+apt-get update
+
+Installation des paquets supplémenaires:
+Lancer la boucle d'istallation en faisant attention qu'il n'ai pas de paquet sensibles en "remove": C'est interactif donc pas d'inquiétude.
+
+for i in autoconf automake binutils bzip2 doxygen gcc less libc6-dev make perl-doc unzip zlibc gcc make binutils gawk x11-utils autotools-dev libltdl-dev libaio1 lesstif2 libmotif4 libaio-dev ksh libpthread-stubs0 libpthread-stubs0-dev libpth-dev libc6-i386  libc6-dev-i386 g++-multilib gcc-multilib xscreensaver ia32-libs ; do apt-get install $i; done
+
+apt-get install gcc make binutils gawk x11-utils rpm alien
+apt-get install libstdc++5
+apt-get install rlwrap (Utilitaire pour l'historisation des commandes  et le rappel: indispensables!!)
+
+Liens symboliques:
+cd /bin
+
+ln -s /usr/bin/rpm
+ln -s /usr/bin/awk
+ln -s /usr/bin/basename
+
+Pou l'installeur graphique, autoriser le X11 forwarding et démarrer un serveur X sur votre poste.
+Connectez-vous en ssh directement en user oracle
+
+Lancement installer sous /app/oracle/install/database/:
+cd /app/oracle/install/database/
+
+./runInstaller avec un export display
+
+
+Voir snapshot:
+
+
+
+
+
+démarrage listener:
+
+
+en user oracle/unix
+
+export ORACLE_HOME=/app/oracle/product10
+export PATH=/app/oracle/product10/bin:$PATH
+export ORACLE_SID=DBORA
+export DISABLE_HUGETLBFS=1    (on désactive les hugepages sinon pas de démarrage de l'instance oracle: à Activer si les hugepages sont utilisés)
+PS1="\\[\\033[0;31m\\][\ENV]\\[\\033[00m\\]\${debian_chroot:+(\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\][${ORACLE_SID} Instance]\\$ " (le petit plus)
+
+==> entrer ces parametres dans le .bash_profile de l'utilisateur oracle
+
+
+/app/oracle/product10/bin/lsnrctl start LISTENER
+============================>  
+LSNRCTL for Linux: Version 10.2.0.1.0 - Production on 25-FEB-2015 16:21:40
+
+Copyright (c) 1991, 2005, Oracle.  All rights reserved.
+
+Starting /app/oracle/product10/bin/tnslsnr: please wait...
+
+TNSLSNR for Linux: Version 10.2.0.1.0 - Production
+Log messages written to /app/oracle/product10/network/log/listener.log
+Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=monhost.mondomaine.com)(PORT=1521)))
+
+Connecting to (ADDRESS=(PROTOCOL=tcp)(HOST=)(PORT=1521))
+STATUS of the LISTENER
+------------------------
+Alias                     LISTENER
+Version                   TNSLSNR for Linux: Version 10.2.0.1.0 - Production
+Start Date                25-FEB-2015 16:21:40
+Uptime                    0 days 0 hr. 0 min. 0 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Log File         /app/oracle/product10/network/log/listener.log
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=monhost.mondomaine.com)(PORT=1521)))
+The listener supports no services
+The command completed successfully
+====================================================================================
+
+Création passwordfile (évite les erreurs quand on atribu un rôle sys à un utilisateur oracle):
+cd /app/oracle/product10/dbs
+
+orapwd file=orapwDBORA password=password entries=10
+
+création init(SID).ora
+cd /app/oracle/product10/dbs
+cp init.ora initDBORA.ora
+
+
+paramètres: 
+DB_CREATE_FILE_DEST = /data/oracle/oradata     (ajouté)
+shared_pool_size = 268435456                      (modifié)
+UNDO_MANAGEMENT = AUTO                            (ajouté)
+streams_pool_size = 41943040  (40M ajouté)
+
+
+
+
+Répertoire d'accueil de la base: mkdir -p  /data/oracle/oradata/DBORA : évite une erreur type    error in adding log file '/data/oracle/oradata/DBORA/redo01.log'
+
+Ouvrir un sqlplus:
+lrwrap sqlplus / as sysdba ==> (on lance avec lrwrap pour historique et rappel de commandes)
+
+SQL> CREATE SPFILE='/app/oracle/product10/dbs/spfileDBORA.ora' FROM PFILE='/app/oracle/product10/dbs/initDBORA.ora';
+
+SQL> startup nomount
+ORACLE instance started.
+
+Total System Global Area  343932928 bytes
+Fixed Size                  2020640 bytes
+Variable Size             335547104 bytes
+Database Buffers            4194304 bytes
+Redo Buffers                2170880 bytes
+
+==> Création de la Base de donnée:
+créer un createDBORA.sql par exemple avec les informations suivantes, à adapter en fonction de l'architecture voulue:
+
+
+=================================== création de la bae DBORA
+
+CREATE DATABASE DBORA
+   USER SYS IDENTIFIED BY password
+   USER SYSTEM IDENTIFIED BY password
+   LOGFILE GROUP 1 ('/data/oracle/oradata/DBORA/redo01.log') SIZE 100M,
+           GROUP 2 ('/data/oracle/oradata/DBORA/redo02.log') SIZE 100M,
+           GROUP 3 ('/data/oracle/oradata/DBORA/redo03.log') SIZE 100M
+   MAXLOGFILES 5
+   MAXLOGMEMBERS 5
+   MAXLOGHISTORY 1
+   MAXDATAFILES 100
+   MAXINSTANCES 1
+   CHARACTER SET AL32UTF8
+   NATIONAL CHARACTER SET AL16UTF16
+   DATAFILE '/data/oracle/oradata/DBORA/system01.dbf' SIZE 325M REUSE
+   EXTENT MANAGEMENT LOCAL
+   SYSAUX DATAFILE '/data/oracle/oradata/DBORA/sysaux01.dbf' SIZE 325M REUSE
+   DEFAULT TABLESPACE tbs_1
+   DEFAULT TEMPORARY TABLESPACE tempts1
+      TEMPFILE '/data/oracle/oradata/DBORA/temp01.dbf' 
+      SIZE 20M REUSE
+   UNDO TABLESPACE undotbs 
+      DATAFILE '/data/oracle/oradata/DBORA/undotbs01.dbf'
+      SIZE 200M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;
+
+
+
+====================================
+
+Lancer la création:
+SQL> @createDBORA.sql;
+
+Database created.
+
+
+
+
+Installation des paquets DBMS  car on a bypassé l'installation de la base avec DBCA.
+#### la methode install software only nous oblige à installer les paquets dbms à la main. 
+####Installation paquet DBMS :
+lrwrap sqlplus / as sysdba ==>
+
+# Les trois scripts principaux sont:    les lancer sucessivement.
+SQL> @$ORACLE_HOME/rdbms/admin/catalog.sql;
+SQL> @$ORACLE_HOME/rdbms/admin/catproc.sql;
+SQL> @$ORACLE_HOME/rdbms/admin/utlrp.sql;
+
+
+==== Utilisation de dbshut et dbstart
+
+configuration ORATAB : 
+echo "DBORA:/app/oracle/product10:Y" >> /etc/oratab 
+
+modification d'un chemin dans $ORACLE_HOME/bin/dbstart
+
+
+mettre le bon path sur ORACLE_HOME_LISTNER 
+ORACLE_HOME_LISTNER=$ORACLE_HOME
+
+pour stopper en oracle:
+dbshut &&  /app/oracle/product10/bin/lsnrctl stop LISTENER
+pour démarrer:
+dbstart
+
+ou en sqlplus:
+SQL>shutdown
+SQL>startup
+
+
+Pour faire propre avec un script init :
+
+sous /etc/init.d
+dbora comme suit:
+=====================================================================
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          dbora
+# Required-Start:    $remote_fs $syslog open-iscsi iscsi
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Oracle 12
+# Description:       Oracle 12 database
+### END INIT INFO
+
+ORACLE_HOME=/app/oracle/product10
+ORACLE_OWNER=oracle
+
+if [ ! -f $ORACLE_HOME/bin/dbstart ]
+then
+    echo "Oracle startup: cannot start"
+    exit
+fi
+
+case "$1" in
+    'start')
+        # Start the Oracle databases:
+        # The following command assumes that the oracle login
+        # will not prompt the user for any values
+        su - $ORACLE_OWNER -c "$ORACLE_HOME/bin/lsnrctl start"
+        su - $ORACLE_OWNER -c $ORACLE_HOME/bin/dbstart
+        ;;
+    'stop')
+        # Stop the Oracle databases:
+        # The following command assumes that the oracle login
+        # will not prompt the user for any values
+        su - $ORACLE_OWNER -c $ORACLE_HOME/bin/dbshut
+        su - $ORACLE_OWNER -c "$ORACLE_HOME/bin/lsnrctl stop"
+        ;;
+esac
+========================================================
+chmod +x /etc/init.d/dbora
+pour le démarrage automatique: update-rc dbora defaults
+
+faire un test:
+/etc/init.d/dbora [stop,start]
+
+ps -ef |grep ora
+oracle    9690     1  0 11:48 ?        00:00:00 /app/oracle/product10/bin/tnslsnr LISTENER -inherit
+oracle    9767     1  0 11:48 ?        00:00:00 ora_pmon_DBORA
+oracle    9769     1  0 11:48 ?        00:00:00 ora_psp0_DBORA
+oracle    9771     1  0 11:48 ?        00:00:00 ora_mman_DBORA
+oracle    9773     1  0 11:48 ?        00:00:00 ora_dbw0_DBORA
+oracle    9775     1  0 11:48 ?        00:00:00 ora_lgwr_DBORA
+oracle    9777     1  0 11:48 ?        00:00:00 ora_ckpt_DBORA
+oracle    9779     1  0 11:48 ?        00:00:00 ora_smon_DBORA
+oracle    9781     1  0 11:48 ?        00:00:00 ora_reco_DBORA
+oracle    9783     1  1 11:48 ?        00:00:00 ora_mmon_DBORA
+oracle    9785     1  0 11:48 ?        00:00:00 ora_mmnl_DBORA
+oracle    9789     1  0 11:48 ?        00:00:00 ora_qmnc_DBORA
+
