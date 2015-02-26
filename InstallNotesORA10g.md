@@ -105,6 +105,7 @@ Graphiques step:
 Oracle Home Location: /app/oracle/product10 (where you want to install engine)
 Don't check box who "Create starter database (additional 720MB)"
 and clic on "next"
+![First Step](https://github.com/lgattoni/Oracle10GSetup/blob/master/First-orasetp1.png?raw=true) 
 
 2: Specify Inventory directory and credentials
 /app/oracle/oraInventory (where you want Inventory)
