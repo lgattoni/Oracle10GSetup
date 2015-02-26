@@ -1,5 +1,6 @@
 
-Installing Oracle 10g R2 on Debian 7.
+##Installing Oracle 10g R2 on Debian 7.
+
 Dont run the create database step with dbca: Create database manually and run dbms script. 
 
 Use 10201_database_linux_x86_64.cpio.gz archive
@@ -13,31 +14,31 @@ DBORA for SID and Database.
 /home/oracle for oracle user unix
 
 
-Tuning Kernel:
-Example with 4GB of RAM. Take half of physical memory for shmmax.
+###Tuning Kernel:
+* Example with 4GB of RAM. Take half of physical memory for shmmax.
+```
+   kernel.shmall = 524288.  
+   #shmmax/PAGE_SIZE.
+   kernel.shmmax = 2147483648 (2GO ici).
+   #half of machine memory.
+   kernel.shmmni = 4096.
+   kernel.sem = 250 32000 100 128.
+   fs.file-max = 65536.
+   net.ipv4.ip_local_port_range = 1024 65000.
+   net.core.rmem_default = 262144.
+   net.core.rmem_max = 262144.
+```
+###tuning shell:
+/etc/security/limits.conf.
+```
+  oracle soft nproc 2047
+  oracle hard nproc 16384
+  oracle soft nofile 1024
+  oracle hard nofile 65536
+```
 
-kernel.shmall = 524288  
-## shmmax/PAGE_SIZE
-kernel.shmmax = 2147483648 (2GO ici)
-# half of machine memory
-kernel.shmmni = 4096
-kernel.sem = 250 32000 100 128
-fs.file-max = 65536
-net.ipv4.ip_local_port_range = 1024 65000
-net.core.rmem_default = 262144
-net.core.rmem_max = 262144
-
-tuning shell:
-/etc/security/limits.conf
-#Oracle 10G
-oracle soft nproc 2047
-oracle hard nproc 16384
-oracle soft nofile 1024
-oracle hard nofile 65536
-
-
-Group and users:
-
+###Group and users:
+```
 Add group:
 groupadd oinstall
 groupadd dba
@@ -53,26 +54,28 @@ chown -R oracle:oinstall /home/oracle
 mkdir -p /app/oracle/oraInventory
 mkdir -p /app/oracle/install
 mkdir -p /data/oracle/oradata
-chown -R oracle.dba /data/oracle/oradata (répertoire des données)
+chown -R or```le.dba /data/oracle/oradata (répertoire des données)
 chown -R oracle. /app/oracle
 
+```
 
 
+### I'm redhat:
 
-I'm redhat:
-create file redhat-release
+* create file redhat-release
+```
 vi /etc/redhat-release
 Red Hat Enterprise Linux Server release 4  (Nahant)
+```
 
-
-Enable i386 packages installation with add 32bits architecture: for ia32-libs :
-
+###Enable i386 packages installation with add 32bits architecture: for ia32-libs :
+```
 dpkg --add-architecture i386
 apt-get update
+```
 
-
-Packages installation:
-Run this for apt-get install.  don't worry, it's interactive step.
+### Packages installation:
+* Run this for apt-get install.  don't worry, it's interactive step.
 See if there are remove packages.
 
 for i in autoconf automake binutils bzip2 doxygen gcc less libc6-dev make perl-doc unzip zlibc gcc make binutils gawk x11-utils autotools-dev libltdl-dev libaio1 lesstif2 libmotif4 libaio-dev ksh libpthread-stubs0 libpthread-stubs0-dev libpth-dev libc6-i386  libc6-dev-i386 g++-multilib gcc-multilib xscreensaver ia32-libs ; do apt-get install $i; done
@@ -213,7 +216,7 @@ Redo Buffers                2170880 bytes
 ==> database creation:
 build file createDBORA.sql with this informations, or other you want:
 
-
+```
 =================================== DBORA
 
 CREATE DATABASE DBORA
@@ -237,33 +240,37 @@ CREATE DATABASE DBORA
       TEMPFILE '/data/oracle/oradata/DBORA/temp01.dbf' 
       SIZE 20M REUSE
    UNDO TABLESPACE undotbs 
-      DATAFILE '/data/oracle/oradata/DBORA/undotbs01.dbf'
+   DATAFILE '/data/oracle/oradata/DBORA/undotbs01.dbf'
       SIZE 200M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;
 
 
 
 ====================================
+```
 
-Launch sql file:
+* Launch sql file:
+```
 SQL> @createDBORA.sql;
 
 Database created.
 
-
+```
 
 ####Install DBMS packages :
 lrwrap sqlplus / as sysdba ==>
 
-# Running this scripts:
+* Running this scripts:
+```
 SQL> @$ORACLE_HOME/rdbms/admin/catalog.sql;
 SQL> @$ORACLE_HOME/rdbms/admin/catproc.sql;
 SQL> @$ORACLE_HOME/rdbms/admin/utlrp.sql;
+```
 
+### Use  dbshut and dbstart
 
-==== Use  dbshut and dbstart
+*  configuration ORATAB : 
 
-configuration ORATAB : 
-
+```
 echo "DBORA:/app/oracle/product10:Y" >> /etc/oratab 
 
 modify path in $ORACLE_HOME/bin/dbstart
@@ -271,19 +278,24 @@ modify path in $ORACLE_HOME/bin/dbstart
 
 good path on ORACLE_HOME_LISTNER 
 ORACLE_HOME_LISTNER=$ORACLE_HOME
+```
 
-Stop oracle
+*  Stop oracle:
+```
 dbshut &&  /app/oracle/product10/bin/lsnrctl stop LISTENER
-start Oacle:
+```
+* start Oacle:
+```
 dbstart
-
-Stop/start on sqlplus:
+```
+* Stop/start on sqlplus:
+```
 SQL>shutdown
 SQL>startup
+```
 
-
-Init script for stop/start by root and after reboot:
-
+### Init script for stop/start by root and after reboot:
+```
 Under /etc/init.d
 create dbora file with this shell :
 =====================================================================
@@ -343,5 +355,6 @@ oracle    9781     1  0 11:48 ?        00:00:00 ora_reco_DBORA
 oracle    9783     1  1 11:48 ?        00:00:00 ora_mmon_DBORA
 oracle    9785     1  0 11:48 ?        00:00:00 ora_mmnl_DBORA
 oracle    9789     1  0 11:48 ?        00:00:00 ora_qmnc_DBORA
+```
 
-Great, you have a Oracle 10g R2 installed on your debian 7 :-)  
+##Great, you have a Oracle 10g R2 installed on your debian 7 :-)  
