@@ -37,7 +37,7 @@ oracle hard nofile 65536
 
 Group and users:
 
-Ajout group:
+Add group:
 groupadd oinstall
 groupadd dba
 addgroup nobody
