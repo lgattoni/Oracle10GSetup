@@ -3,16 +3,16 @@
 
 Dont run the create database step with dbca: Create database manually and run dbms script. 
 
-Use 10201_database_linux_x86_64.cpio.gz archive
+Use 10201_database_linux_x86_64.cpio.gz archive.
 
 In this installation, my environment is:
-
+```
 /app/oracle/product10 for oracle engine (ORACLE_HOME)
 /app/oracle/oraInvetory 
 /data/oracle/oradata for database data
 DBORA for SID and Database.
 /home/oracle for oracle user unix
-
+```
 
 ###Tuning Kernel:
 * Example with 4GB of RAM. Take half of physical memory for shmmax.
