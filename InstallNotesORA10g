@@ -3,6 +3,15 @@ Installing Oracle 10g R2 on Debian 7.
 Dont run the create database step with dbca. We create database manually and run th dbms script. 
 using 10201_database_linux_x86_64.cpio.gz archive
 
+In this installation, my envionment is:
+
+/app/oracle/product10 for oracle engine (ORACLE_HOME)
+/app/oracle/oraInvetory 
+/data/oracle/oradata for database data
+DBORA for SID and Database.
+/home/oracle for oracle user unix
+
+
 Tuning Kernel:
 Example with 4GB of RAM. Take half of physical memory for shmmax.
 
@@ -47,7 +56,7 @@ chown -R oracle.dba /data/oracle/oradata (répertoire des données)
 chown -R oracle. /app/oracle
 
 
-copier    10201_database_linux_x86_64.cpio sous    /app/oracle/install/
+10201_database_linux_x86_64.cpio sous    /app/oracle/install/
 cd   /app/oracle/install
 
 cpio -idmv < 10201_database_linux_x86_64.cpio
