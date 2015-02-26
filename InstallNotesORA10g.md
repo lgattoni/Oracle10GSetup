@@ -76,8 +76,8 @@ apt-get update
 
 ### Packages installation:
 * Run this for apt-get install.  don't worry, it's interactive step.
-See if there are remove packages.
-
+* See if there are remove packages.
+```
 for i in autoconf automake binutils bzip2 doxygen gcc less libc6-dev make perl-doc unzip zlibc gcc make binutils gawk x11-utils autotools-dev libltdl-dev libaio1 lesstif2 libmotif4 libaio-dev ksh libpthread-stubs0 libpthread-stubs0-dev libpth-dev libc6-i386  libc6-dev-i386 g++-multilib gcc-multilib xscreensaver ia32-libs ; do apt-get install $i; done
 
 apt-get install gcc make binutils gawk x11-utils rpm alien
@@ -94,15 +94,15 @@ ln -s /usr/bin/basename
 copy 10201_database_linux_x86_64.cpio.gz under /app/oracle/install/ and gunzip
 cd /app/oracle/install/
 cpio -idmv < 10201_database_linux_x86_64.cpio
-
-for graphical install, authorize X11 forwarding and start X server on machine. 
-ssh connect with oracle user and launch under /app/oracle/install/database/:
-
+```
+* for graphical install, authorize X11 forwarding and start X server on machine. 
+* ssh connect with oracle user and launch under /app/oracle/install/database/:
+```
 cd /app/oracle/install/database/
 ./runInstaller 
+```
 
-
-Graphiques step:
+#### Graphiques step:
 
 1:
 Oracle Home Location: /app/oracle/product10 (where you want to install engine)
@@ -139,7 +139,7 @@ End of installation, exit and yes.
 Start listener:
 
 with user oracle/unix
-
+```
 export ORACLE_HOME=/app/oracle/product10
 export PATH=/app/oracle/product10/bin:$PATH
 export ORACLE_SID=DBORA
@@ -177,13 +177,15 @@ Listening Endpoints Summary...
 The listener supports no services
 The command completed successfully
 ====================================================================================
-
-Create password file:
+```
+* Create password file:
+```
 cd /app/oracle/product10/dbs
 
 orapwd file=orapwDBORA password=password entries=10
-
-Create init(SID).ora
+```
+* Create init(SID).ora
+```
 cd /app/oracle/product10/dbs
 cp init.ora initDBORA.ora
 
@@ -197,9 +199,10 @@ streams_pool_size = 41943040                  (40M add)
 
 
 mkdir -p  /data/oracle/oradata/DBORA
-
-Create spfile:
-Run sqlplus with rlwrap:
+```
+* Create spfile:
+* Run sqlplus with rlwrap:
+```
 rlwrap sqlplus / as sysdba ==> (rlwrap for history and recall commands)
 
 SQL> CREATE SPFILE='/app/oracle/product10/dbs/spfileDBORA.ora' FROM PFILE='/app/oracle/product10/dbs/initDBORA.ora';
@@ -212,9 +215,9 @@ Fixed Size                  2020640 bytes
 Variable Size             335547104 bytes
 Database Buffers            4194304 bytes
 Redo Buffers                2170880 bytes
-
-==> database creation:
-build file createDBORA.sql with this informations, or other you want:
+```
+#### Database creation:
+* build file createDBORA.sql with this informations, or other you want:
 
 ```
 =================================== DBORA
@@ -268,7 +271,7 @@ SQL> @$ORACLE_HOME/rdbms/admin/utlrp.sql;
 
 ### Use  dbshut and dbstart
 
-*  configuration ORATAB : 
+*  configure ORATAB : 
 
 ```
 echo "DBORA:/app/oracle/product10:Y" >> /etc/oratab 
@@ -284,7 +287,7 @@ ORACLE_HOME_LISTNER=$ORACLE_HOME
 ```
 dbshut &&  /app/oracle/product10/bin/lsnrctl stop LISTENER
 ```
-* start Oacle:
+* start Oracle:
 ```
 dbstart
 ```
