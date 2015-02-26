@@ -17,7 +17,7 @@ Tuning Kernel:
 Example with 4GB of RAM. Take half of physical memory for shmmax.
 
 kernel.shmall = 524288  
-# shmmax/PAGE_SIZE
+## shmmax/PAGE_SIZE
 kernel.shmmax = 2147483648 (2GO ici)
 # half of machine memory
 kernel.shmmni = 4096
