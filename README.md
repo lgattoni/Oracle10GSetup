@@ -3,5 +3,7 @@
  
  Read my notes InstallNotesORA10g
  
+ You can see also French pdf with snapshot installation
+ 
  
  
