@@ -2,7 +2,7 @@
 ##Installing Oracle 10g R2 on Debian 7.
 
 Don't run create database step with dbca: Create database manually and run dbms script after. 
-I always have a shared memory problem with dbca under debian7 with graphical installation: It is the same thing with disable hugepages and configure correctly my sysctl. 
+I always have a shared memory problem with dbca under debian7 with graphical installation: It is the same thing when disable hugepages and configure correctly my sysctl.conf. If one run successfully dbca, you are welcome! 
 
 Use 10201_database_linux_x86_64.cpio.gz archive.
 
