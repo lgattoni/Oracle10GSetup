@@ -374,7 +374,7 @@ oracle    9785     1  0 11:48 ?        00:00:00 ora_mmnl_DBORA
 oracle    9789     1  0 11:48 ?        00:00:00 ora_qmnc_DBORA
 ```
 
-### Great, you have a Oracle 10g R2 installed on your debian 7 :-)  
+### Great, you have Oracle 10g R2 installed on your debian 7 :-)  
 ### REF : 
 1. http://docs.oracle.com/cd/B19306_01/index.htm
 2. http://www.dba-oracle.com/
