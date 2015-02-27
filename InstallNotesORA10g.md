@@ -173,7 +173,7 @@ Security                  ON: Local OS Authentication
 SNMP                      OFF
 Listener Log File         /app/oracle/product10/network/log/listener.log
 Listening Endpoints Summary...
-  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=monhost.mondomaine.com)(PORT=1521)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=myhost.mydomaine.com)(PORT=1521)))
 The listener supports no services
 The command completed successfully
 ====================================================================================
