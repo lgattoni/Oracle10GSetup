@@ -137,7 +137,7 @@ clic continue on error with makefile ins_rdbms.mk.
 ![Step5](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step5.png?raw=true)
 
 6.
-run script in popup as root on another term.
+run script in popup as root on another term and ok.
 ```
 /app/oracle/oraInventory/orainstRoot.sh (if directory premissions ok, there is no this script).
 /app/oracle/oraInventory/Root.sh.
