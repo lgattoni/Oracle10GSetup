@@ -146,11 +146,12 @@ run script in popup as root on another term and ok.
 
 7.
 End of installation, exit and yes.
+![Step7](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step7.png?raw=true)
 
 
-Start listener:
+### Start listener:
 
-with user oracle/unix
+with user oracle/unix: set environment
 ```
 export ORACLE_HOME=/app/oracle/product10
 export PATH=/app/oracle/product10/bin:$PATH
@@ -158,11 +159,11 @@ export ORACLE_SID=DBORA
 export DISABLE_HUGETLBFS=1    (deactivate hugepages: activate if use. In this example, startup faile if no deactivate)
 PS1="\\[\\033[0;31m\\][\ENV]\\[\\033[00m\\]\${debian_chroot:+(\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\][${ORACLE_SID} Instance]\\$ " (for fun)
 
-==> input this lines in .bash_profile for oracle user
+==> input this lines in .bash_profile for oracle user under /home/oracle
 
 
 /app/oracle/product10/bin/lsnrctl start LISTENER
-============================>  
+============================>  RESULT
 LSNRCTL for Linux: Version 10.2.0.1.0 - Production on 25-FEB-2015 16:21:40
 
 Copyright (c) 1991, 2005, Oracle.  All rights reserved.
