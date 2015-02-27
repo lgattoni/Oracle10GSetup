@@ -322,8 +322,8 @@ create dbora file with this shell :
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Oracle 12
-# Description:       Oracle 12 database
+# Short-Description: Oracle 10
+# Description:       Oracle 10 database
 ### END INIT INFO
 
 ORACLE_HOME=/app/oracle/product10
