@@ -126,17 +126,22 @@ and clic on "install"
 ![Step3](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step3.png?raw=true)
 
 4:
-Installation is running...
+Installation is running.
+
 ![Step4](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step4.png?raw=true)
 
 5:
-clic continue on error with makefile ins_rdbms.mk
+clic continue on error with makefile ins_rdbms.mk.
+
 ![Step5](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step5.png?raw=true)
+
 6:
 run script in popup as root in another term.
-/app/oracle/oraInventory/orainstRoot.sh (if directory premissions ok, there is no this script)
-/app/oracle/oraInventory/Root.sh
+/app/oracle/oraInventory/orainstRoot.sh (if directory premissions ok, there is no this script).
+/app/oracle/oraInventory/Root.sh.
+
 ![Step6](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step6.png?raw=true)
+
 7:
 End of installation, exit and yes.
 
