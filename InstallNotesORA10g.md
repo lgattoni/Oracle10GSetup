@@ -149,7 +149,6 @@ run script in popup as root on another term and ok.
 End of installation, exit and yes.
 ![Step7](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step7.png?raw=true)
 
-
 ### Start listener:
 
 * with user oracle/unix: set environment
