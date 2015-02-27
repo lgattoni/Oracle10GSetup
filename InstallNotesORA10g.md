@@ -104,35 +104,47 @@ cd /app/oracle/install/database/
 
 #### Graphiques step:
 
-1:
+1.
 Oracle Home Location: /app/oracle/product10 (where you want to install engine)
 Don't check box who "Create starter database (additional 720MB)"
 and clic on "next"
-![First Step](https://github.com/lgattoni/Oracle10GSetup/blob/master/First-orasetp1.png?raw=true) 
+![First Step](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step1.png?raw=true) 
 
-2: Specify Inventory directory and credentials
+2.
+Specify Inventory directory and credentials
 /app/oracle/oraInventory (where you want Inventory)
 
 "specify operating System group name" 
 choose "dba"
 and clic on "next"
 
-3:
+![Step2](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step2.png?raw=true)
+
+3.
 Summary
 and clic on "install"
 
-4:
-Installation is running...
+![Step3](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step3.png?raw=true)
 
-5:
-clic continue on error with makefile ins_rdbms.mk
+4.
+Installation is running.
 
-6:
-run script in popup as root in another term.
-/app/oracle/oraInventory/orainstRoot.sh (if directory premissions ok, there is no this script)
-/app/oracle/oraInventory/Root.sh
+![Step4](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step4.png?raw=true)
 
-7:
+5.
+clic continue on error with makefile ins_rdbms.mk.
+
+![Step5](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step5.png?raw=true)
+
+6.
+run script in popup as root on another term and ok.
+```
+/app/oracle/oraInventory/orainstRoot.sh (if directory premissions ok, there is no this script).
+/app/oracle/oraInventory/Root.sh.
+```
+![Step6](https://github.com/lgattoni/Oracle10GSetup/blob/master/img/Step6.png?raw=true)
+
+7.
 End of installation, exit and yes.
 
 
