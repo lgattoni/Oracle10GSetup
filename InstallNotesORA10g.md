@@ -1,7 +1,7 @@
 
 ##Installing Oracle 10g R2 on Debian 7.
 
-Dont run the create database step with dbca: Create database manually and run dbms script. 
+Don't run create database step with dbca: Create database manually and run dbms script. 
 
 Use 10201_database_linux_x86_64.cpio.gz archive.
 
@@ -173,7 +173,7 @@ Security                  ON: Local OS Authentication
 SNMP                      OFF
 Listener Log File         /app/oracle/product10/network/log/listener.log
 Listening Endpoints Summary...
-  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=monhost.mondomaine.com)(PORT=1521)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=myhost.mydomaine.com)(PORT=1521)))
 The listener supports no services
 The command completed successfully
 ====================================================================================
