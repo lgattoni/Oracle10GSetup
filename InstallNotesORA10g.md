@@ -274,7 +274,7 @@ Database created.
 ```
 
 ####Install DBMS packages :
-lrwrap sqlplus / as sysdba ==>
+rlwrap sqlplus / as sysdba ==>
 
 * Running this scripts:
 ```
