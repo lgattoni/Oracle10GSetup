@@ -156,7 +156,7 @@ End of installation, exit and yes.
 export ORACLE_HOME=/app/oracle/product10
 export PATH=/app/oracle/product10/bin:$PATH
 export ORACLE_SID=DBORA
-export DISABLE_HUGETLBFS=1    (deactivate hugepages: activate if use. In this example, startup faile if no deactivate)
+export DISABLE_HUGETLBFS=1    (deactivate hugepages: activate if use. In this example, startup failed if no deactivate)
 PS1="\\[\\033[0;31m\\][\ENV]\\[\\033[00m\\]\${debian_chroot:+(\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\][${ORACLE_SID} Instance]\\$ " (for fun)
 
 ==> input this lines in .bash_profile for oracle user under /home/oracle
